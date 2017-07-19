@@ -12,9 +12,9 @@ import scala.language.postfixOps
 
 object Example extends App {
 
-  var url = "jdbc:mysql://127.0.0.1:3306/blog"
-  val username = "root"
-  val pwd = "123456"
+  val url = sys.env.getOrElse("PLAY_DB_URL", "jdbc:mysql://127.0.0.1:3306/blog")
+  val username = sys.env.getOrElse("PLAY_DB_USER", "root")
+  val pwd = sys.env.getOrElse("PLAY_DB_PASSWORD", "123456")
 
   val db = Database.forURL(url = url, user = username, password = pwd, driver = "com.mysql.jdbc.Driver")
   //   Using generated code. Our Build.sbt makes sure they are generated before compilation.
