@@ -1,4 +1,4 @@
-val slickVersion = "3.1.1"
+val slickVersion = "3.2.0"
 
 lazy val mainProject = Project(
   id="slick-codegen-example",
@@ -9,7 +9,6 @@ lazy val mainProject = Project(
       "com.typesafe.slick" %% "slick" % slickVersion,
       "com.typesafe.slick" %% "slick-codegen" % slickVersion,
       "org.slf4j" % "slf4j-nop" % "1.7.19",
-//      "com.h2database" % "h2" % "1.4.191"
       "mysql" % "mysql-connector-java" % "5.1.39"
     ),
     slick <<= slickCodeGenTask, // register manual sbt command
@@ -21,16 +20,13 @@ lazy val mainProject = Project(
 lazy val slick = TaskKey[Seq[File]]("gen-tables")
 lazy val slickCodeGenTask = (sourceManaged, dependencyClasspath in Compile, runner in Compile, streams) map { (dir, cp, r, s) =>
   val outputDir = (dir / "slick").getPath // place generated files in sbt's managed sources folder
-//  val url = "jdbc:h2:mem:test;INIT=runscript from 'src/main/sql/create.sql'" // connection info for a pre-populated throw-away, in-memory db for this demo, which is freshly initialized on every run
-//  val jdbcDriver = "org.h2.Driver"= "slick.driver.H2Driver"
-//  val slickDriver
 
   val url = "jdbc:mysql://127.0.0.1:3306/blog"
   val username = "root"
   val pwd = "123456"
 
   val jdbcDriver = "com.mysql.jdbc.Driver"
-  val slickDriver = "slick.driver.MySQLDriver"
+  val slickDriver = "slick.jdbc.MySQLProfile"
 
   val pkg = "demo"
   toError(r.run("slick.codegen.SourceCodeGenerator", cp.files, Array(slickDriver, jdbcDriver, url, outputDir, pkg,username,pwd), s.log))
